@@ -74,7 +74,8 @@ app.get('/api/articles', async (req, res) => {
     const { data, error } = await supabase
         .from('articles')
         .select('*')
-        .order('created_at', { ascending: false });
+        // CORRECTED: Sort by the 'published_date' column which exists in your table
+        .order('published_date', { ascending: false });
 
     if (error) {
         console.error("Supabase select error:", error);
