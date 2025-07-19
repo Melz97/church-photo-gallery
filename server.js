@@ -1,4 +1,4 @@
-// server.js - Updated with Article Routes
+// server.js - Updated with Article Routes and Debugging
 
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
@@ -66,18 +66,18 @@ app.delete('/api/photos', requireAuth, async (req, res) => {
     res.status(200).json({ message: 'All photos deleted successfully.' });
 });
 
+
 // --- ARTICLE API ROUTES ---
 
 // [PUBLIC] Gets all articles from the Supabase database
 app.get('/api/articles', async (req, res) => {
     const { data, error } = await supabase
         .from('articles')
-        .select('*');
-        // .order('published_date', { ascending: false }); // Temporarily removed for testing
+        .select('*')
+        .order('created_at', { ascending: false });
 
     if (error) {
-        // Log the specific error to Render for debugging
-        console.error("Supabase select error:", error); 
+        console.error("Supabase select error:", error);
         return res.status(500).json({ message: 'Error fetching articles.', error });
     }
     res.json(data);
@@ -85,13 +85,13 @@ app.get('/api/articles', async (req, res) => {
 
 // [PUBLIC] Gets a SINGLE article by its ID
 app.get('/api/articles/:id', async (req, res) => {
-    const { id } = req.params; // Get the ID from the URL
+    const { id } = req.params;
 
     const { data, error } = await supabase
         .from('articles')
         .select('*')
-        .eq('id', id) // Find the row where the id column matches
-        .single(); // We expect only one result
+        .eq('id', id)
+        .single();
 
     if (error) {
         return res.status(500).json({ message: 'Error fetching article.', error });
@@ -100,6 +100,29 @@ app.get('/api/articles/:id', async (req, res) => {
         return res.status(404).json({ message: 'Article not found.' });
     }
     res.json(data);
+});
+
+// [PROTECTED] Creates a new article in the Supabase database
+app.post('/api/articles', requireAuth, async (req, res) => {
+    // --- THIS IS THE NEW LINE FOR DEBUGGING ---
+    console.log('POST /api/articles route was hit. Request body:', req.body);
+
+    const { title, content, author, published_date, image_url } = req.body; 
+
+    if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required.' });
+    }
+
+    const { data, error } = await supabase
+        .from('articles')
+        .insert([{ title, content, author: author || 'Anonymous', published_date, image_url }])
+        .select();
+    
+    if (error) {
+        console.error("Supabase insert error:", error);
+        return res.status(500).json({ message: 'Error creating article.', error });
+    }
+    res.status(201).json({ message: 'Article created successfully.', article: data });
 });
 
 // Start the server
