@@ -249,8 +249,11 @@
           }
 
           articles.forEach(article => {
-            const articleCard = document.createElement('div');
-            articleCard.className = 'article-card';
+  // --- ADD THIS LINE FOR DEBUGGING ---
+  console.log(article); 
+
+  const articleCard = document.createElement('div');
+  articleCard.className = 'article-card';
             
             const publishedDate = new Date(article.published_date || article.created_at).toLocaleDateString('en-US', {
                 year: 'numeric', month: 'long', day: 'numeric'
@@ -258,7 +261,7 @@
 
             articleCard.innerHTML = `
             ${article.image_url ? `<img src="${article.image_url}" alt="${article.title}">` : ''}
-            <h4>${article.title}</h4>
+            f<h4>${article.title}</h4>
             <p class="meta">By ${article.author || 'Anonymous'} on ${publishedDate}</p>
             <p>${article.content.substring(0, 200)}...</p>
              <a href="article.html?id=${article.id}">Read More</a>
