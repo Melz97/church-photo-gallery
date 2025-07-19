@@ -260,11 +260,12 @@
             });
 
             articleCard.innerHTML = `
-            ${article.image_url ? `<img src="${article.image_url}" alt="${article.title}">` : ''}
-            f<h4>${article.title}</h4>
-            <p class="meta">By ${article.author || 'Anonymous'} on ${publishedDate}</p>
-            <p>${article.content.substring(0, 200)}...</p>
-             <a href="article.html?id=${article.id}">Read More</a>
+  ${article.image_url ? `<img src="${article.image_url}" alt="${article.title}">` : ''}
+  <h4>${article.title}</h4>
+  <p class="meta">By ${article.author || 'Anonymous'} on ${publishedDate}</p>
+  <p>${article.content.substring(0, 200)}...</p>
+  <a href="article.html?id=${article.id}">Read More</a>
+`;
             `;  
             articlesContainer.appendChild(articleCard);
           });
