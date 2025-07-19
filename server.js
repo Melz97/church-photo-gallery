@@ -83,6 +83,25 @@ app.get('/api/articles', async (req, res) => {
     res.json(data);
 });
 
+// [PUBLIC] Gets a SINGLE article by its ID
+app.get('/api/articles/:id', async (req, res) => {
+    const { id } = req.params; // Get the ID from the URL
+
+    const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('id', id) // Find the row where the id column matches
+        .single(); // We expect only one result
+
+    if (error) {
+        return res.status(500).json({ message: 'Error fetching article.', error });
+    }
+    if (!data) {
+        return res.status(404).json({ message: 'Article not found.' });
+    }
+    res.json(data);
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);
