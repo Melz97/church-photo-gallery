@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery - Living Christian</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Icons" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Roboto, sans-serif;
+      background: linear-gradient(135deg, #5b36f2, #9c27b0);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,0.9);
+      color: #1c1b1f;
+      backdrop-filter: blur(8px);
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+    header h1 {
+        margin-bottom: 0.5rem;
+    }
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+    }
+    nav a {
+      color: #5b36f2;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+        color: #7b4cff;
+    }
+    main {
+      width: 95%;
+      max-width: none;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    .section-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0 1rem;
+      box-sizing: border-box;
+    }
+    .section-header h2 {
+      margin: 0;
+      white-space: nowrap;
+      color: #D0BCFF;
+    }
+    #photo-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr); 
+      gap: 15px;
+      padding: 1rem;
+      margin-top: 20px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 1400px) { #photo-grid { grid-template-columns: repeat(8, 1fr); } }
+    @media (max-width: 1024px) { #photo-grid { grid-template-columns: repeat(6, 1fr); } }
+    @media (max-width: 768px) { #photo-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 480px) { #photo-grid { grid-template-columns: repeat(3, 1fr); } }
+    #photo-grid a {
+      position: relative;
+      display: block;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+    }
+    #photo-grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #photo-grid img:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    .upload-button {
+      background-color: #D0BCFF;
+      color: #21005D;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      white-space: nowrap;
+    }
+    .upload-button:hover {
+      background-color: #EADDFF;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
+    }
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #333;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 1rem;
+        z-index: 10000;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        opacity: 0;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .toast.info { background-color: #2196F3; }
+    .toast.success { background-color: #4CAF50; }
+    .toast.error { background-color: #f44336; }
+    .empty-gallery-message {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 50px;
+        font-size: 1.1em;
+        grid-column: 1 / -1;
+    }
+
+    /* HIDE THE DEFAULT UPLOADCARE BUTTON */
+    .uploadcare--widget {
+        display: none !important;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Living Christian Church</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="section-header">
+            <h2>Church Photo Gallery</h2>
+            <div>
+                <button id="upload-photo-btn" class="upload-button">
+                    <span class="material-icons">cloud_upload</span> Upload a Photo
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" id="uploadcare-widget-input"
+               name="content"
+               data-public-key="55a6c211f7e50366090e"
+               data-multiple="true"
+               data-images-only="true"
+               data-image-shrink="1920x1920" />
+
+        <div id="photo-grid">
+            <p class="empty-gallery-message">Your gallery is currently empty. Upload some photos!</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="delete-all-btn" class="upload-button" style="background-color: #EF9A9A; color: #B71C1C; display: none;">
+                <span class="material-icons">delete_forever</span> Delete All Photos
+            </button>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"></script>
+
+    <script>
+        UPLOADCARE_PUBLIC_KEY = '55a6c211f7e50366090e';
+        let adminPassword = null;
+
+        function showToast(message, type = 'info') { const toast = document.createElement('div'); toast.textContent = message; toast.classList.add('toast', type); document.body.appendChild(toast); setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateX(-50%) translateY(0)'; }, 10); setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(20px)'; toast.addEventListener('transitionend', () => toast.remove(), { once: true }); }, 3500); }
+        function initializeLightbox() { if (typeof jQuery !== 'undefined' && typeof lightbox !== 'undefined') { jQuery(function($) { lightbox.option({ 'resizeDuration': 200, 'wrapAround': true }); lightbox.init(); }); } }
+
+        async function rebuildGallery() {
+            const gallery = document.getElementById('photo-grid');
+            const deleteAllBtn = document.getElementById('delete-all-btn');
+            try {
+                const response = await fetch('/api/photos');
+                const photos = await response.json();
+                gallery.innerHTML = '';
+                if (photos.length === 0) {
+                    gallery.innerHTML = '<p class="empty-gallery-message">The gallery is empty. Upload some photos!</p>';
+                    deleteAllBtn.style.display = 'none';
+                } else {
+                    photos.forEach(photo => {
+                        const link = document.createElement('a');
+                        link.href = photo.url;
+                        link.setAttribute('data-lightbox', 'church-gallery');
+                        link.setAttribute('data-title', photo.name || 'Uploaded Photo');
+                        const img = document.createElement('img');
+                        img.src = `${photo.url}-/scale_crop/300x300/center/`;
+                        img.alt = photo.name || 'Uploaded Photo';
+                        link.appendChild(img);
+                        gallery.appendChild(link);
+                    });
+                    deleteAllBtn.style.display = adminPassword ? 'inline-block' : 'none';
+                }
+                initializeLightbox();
+            } catch (error) {
+                showToast('Could not load gallery from server.', 'error');
+            }
+        }
+
+        async function deleteAllPhotos() {
+            if (!adminPassword) return;
+            if (confirm("Are you sure you want to delete ALL photos from the server? This cannot be undone.")) {
+                try {
+                    const response = await fetch('/api/photos', {
+                        method: 'DELETE',
+                        headers: { 'x-admin-password': adminPassword }
+                    });
+                    if (!response.ok) throw new Error((await response.json()).message);
+                    rebuildGallery();
+                    showToast("All photos deleted successfully.", 'success');
+                } catch (error) {
+                    showToast(`Deletion failed: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const uploadPhotoBtn = document.getElementById('upload-photo-btn');
+            const deleteAllButton = document.getElementById('delete-all-btn');
+            const uploadcareInput = document.getElementById('uploadcare-widget-input');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                const pass = prompt("Enter admin password:");
+                if (pass) {
+                    // --- SETUP ALL ADMIN FEATURES ---
+                    adminPassword = pass;
+                    uploadPhotoBtn.style.display = 'flex';
+
+                    // Add the role attribute to the input before initializing the widget
+                    uploadcareInput.setAttribute('role', 'uploadcare-uploader');
+
+                    const widget = uploadcare.Widget(uploadcareInput);
+                    
+                    uploadPhotoBtn.addEventListener('click', () => widget.openDialog());
+
+                    widget.onChange(async group => {
+                        if (!group || !adminPassword) return;
+                        showToast('Upload started...', 'info');
+                        
+                        const files = await Promise.all(group.files());
+                        const newPhotosToSave = files.map(fileInfo => ({
+                            uuid: fileInfo.uuid,
+                            url: fileInfo.cdnUrl,
+                            name: fileInfo.name
+                        }));
+
+                        if (newPhotosToSave.length > 0) {
+                            try {
+                                const response = await fetch('/api/photos', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'x-admin-password': adminPassword
+                                    },
+                                    body: JSON.stringify(newPhotosToSave)
+                                });
+                                if (!response.ok) throw new Error((await response.json()).message);
+                                showToast(`Successfully added ${newPhotosToSave.length} new photo(s).`, 'success');
+                                rebuildGallery();
+                            } catch (error) {
+                                showToast(`Upload failed: ${error.message}`, 'error');
+                            }
+                        }
+                        widget.value(null);
+                    });
+                }
+            } else {
+                uploadPhotoBtn.style.display = 'none';
+            }
+
+            rebuildGallery();
+            deleteAllButton.addEventListener('click', deleteAllPhotos);
+        });
+    </script>
+</body>
+</html>

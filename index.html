@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Living Christian Church</title>
+  <!-- Material Web Components -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@material/web/all.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Icons" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Roboto, sans-serif;
+      background: linear-gradient(135deg, #5b36f2, #9c27b0);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      color: #ffffff;
+    }
+
+    header {
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 1rem;
+      margin: 1rem;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      color: #1c1b1f;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    nav a {
+      margin-left: 1rem;
+      color: #5b36f2;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: url('church-bg.jpg') center/cover no-repeat;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-overlay {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      backdrop-filter: blur(4px);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.2);
+    }
+
+    main {
+      max-width: 1024px;
+      margin: auto;
+      padding: 2rem;
+      background-color: rgba(255, 255, 255, 0.85);
+      color: #1c1b1f;
+      border-radius: 1rem;
+      backdrop-filter: blur(6px);
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    footer {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #1c1b1f;
+      border-radius: 1rem;
+      margin: 1rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .contact-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+    }
+
+    .gallery img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="pageHeader">
+    <h1>Living Christian</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-overlay">
+      <h2 class="md-headline-large">We are one with Jesus Christ</h2>
+      <p class="md-body-medium">A place to worship, grow, and serve together in Christ.</p>
+    </div>
+  </section>
+
+  <main>
+    <section id="about">
+      <h3 class="md-title-large">About Us</h3>
+      <p class="md-body-medium">
+        Faith Haven Church is a Christ-centered community located in the heart of our town. We believe in the power of worship, prayer, and fellowship to transform lives. Our mission is to spread the love of Jesus Christ through service, teaching, and compassion.
+      </p>
+    </section>
+
+    <section id="services">
+      <h3 class="md-title-large">Weekly Services</h3>
+      <ul class="md-body-medium">
+        <li>Sunday Worship: 9:00 AM & 5:00 PM</li>
+        <li>Midweek Prayer Meeting: Wednesday 6:30 PM</li>
+        <li>Youth Fellowship: Friday 7:00 PM</li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h3 class="md-title-large">Contact Us</h3>
+      <div class="contact-info"><span class="material-icons">location_on</span> 123 Grace Street, Townsville</div>
+      <div class="contact-info"><span class="material-icons">call</span> (123) 456-7890</div>
+      <div class="contact-info"><span class="material-icons">email</span> contact@faithhaven.org</div>
+
+      <form>
+        <md-outlined-text-field label="Your Name" style="width: 100%;" required></md-outlined-text-field>
+        <br /><br />
+        <md-outlined-text-field label="Your Email" type="email" style="width: 100%;" required></md-outlined-text-field>
+        <br /><br />
+        <md-outlined-text-field label="Your Message" textarea rows="4" style="width: 100%;" required></md-outlined-text-field>
+        <br /><br />
+        <a href=https://www.facebook.com/share/16bLofJRiB/ target="_blank" style="
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  color: #0084FF;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.2s ease;
+">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#0084FF" height="24" viewBox="0 0 32 32" width="24">
+    <path d="M16 0C7.16344 0 0 6.86396 0 15.3332C0 20.2165 2.5695 24.5367 6.61732 27.1917V32L11.244 29.7484C12.7758 30.1637 14.3646 30.4001 16 30.4001C24.8366 30.4001 32 23.5361 32 15.3332C32 6.86396 24.8366 0 16 0ZM17.8846 20.3648L14.2521 17.3078L8.46153 20.3648L14.4887 11.6936L18.1163 14.7506L23.5385 11.6936L17.8846 20.3648Z"/>
+  </svg>
+  Message Us
+</a>
+</md-filled-button>
+      </form>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 Living Christian Church. All rights reserved.
+  </footer>
+
+  <!-- Scroll Hide/Show Header Script -->
+  <script>
+    let prevScroll = window.scrollY;
+    const header = document.getElementById("pageHeader");
+
+    window.addEventListener("scroll", () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > prevScroll) {
+        header.style.transform = "translateY(-150%)";
+      } else {
+        header.style.transform = "translateY(0)";
+      }
+      prevScroll = currentScroll;
+    });
+  </script>
+
+</body>
+</html>
+    //UPLOADCARE_PUBLIC_KEY = '55a6c211f7e50366090e';
