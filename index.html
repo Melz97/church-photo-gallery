@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Throne of the Risen Christ International Ministry</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@material/web/all.min.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Icons" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Icons" />
   <style>
     body {
       margin: 0;
@@ -76,6 +76,68 @@
       margin-bottom: 3rem;
     }
 
+    /* --- STYLES FOR ARTICLE SECTION --- */
+    .section-header { /* NEW container for the heading and button */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    .publish-btn { /* NEW style for the button */
+        background-color: #D0BCFF;
+        color: #21005D;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+    }
+    .publish-btn:hover {
+        background-color: #EADDFF;
+    }
+    #articles-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .article-card {
+        background-color: #f7f2fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+     .article-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    .article-card h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.25rem;
+        color: #1c1b1f;
+    }
+    .article-card .meta {
+        font-size: 0.85rem;
+        color: #6750A4;
+        margin-bottom: 1rem;
+    }
+    .article-card p {
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+    }
+    .article-card a {
+        color: #5b36f2;
+        text-decoration: none;
+        font-weight: 500;
+        align-self: flex-start;
+    }
+    /* --- END OF ARTICLE STYLES --- */
+
     footer {
       text-align: center;
       background-color: rgba(255, 255, 255, 0.85);
@@ -93,20 +155,6 @@
       margin-bottom: 1rem;
       gap: 0.5rem;
     }
-
-    .gallery img {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
   </style>
 </head>
 <body>
@@ -115,6 +163,7 @@
     <h1>Throne of the Risen Christ International Ministry</h1>
     <nav>
       <a href="#about">About</a>
+      <a href="#articles-section">Articles</a>
       <a href="#services">Services</a>
       <a href="gallery.html">Gallery</a>
       <a href="#contact">Contact</a>
@@ -136,6 +185,15 @@
       </p>
     </section>
 
+    <section id="articles-section">
+      <div class="section-header">
+        <h3 class="md-title-large">Recent Articles</h3>
+        <a href="create-article.html" class="publish-btn">Publish an Article</a>
+      </div>
+      <div id="articles-container">
+        </div>
+    </section>
+    
     <section id="services">
       <h3 class="md-title-large">Come and Join us on our weekly services</h3>
       <ul class="md-body-medium">
@@ -150,36 +208,9 @@
       <div class="contact-info"><span class="material-icons">location_on</span> 123 Grace Street, Townsville</div>
       <div class="contact-info"><span class="material-icons">call</span> (123) 456-7890</div>
       <div class="contact-info"><span class="material-icons">email</span> contact@faithhaven.org</div>
-
-      <form>
-        <md-outlined-text-field label="Your Name" style="width: 100%;" required></md-outlined-text-field>
-        <br /><br />
-        <md-outlined-text-field label="Your Email" type="email" style="width: 100%;" required></md-outlined-text-field>
-        <br /><br />
-        <md-outlined-text-field label="Your Message" textarea rows="4" style="width: 100%;" required></md-outlined-text-field>
-        <br /><br />
-        <a href="https://m.me/61551712572574" target="_blank" style="
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #ffffff;
-  color: #0084FF;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background 0.2s ease;
-">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="#0084FF" height="24" viewBox="0 0 32 32" width="24">
-    <path d="M16 0C7.16344 0 0 6.86396 0 15.3332C0 20.2165 2.5695 24.5367 6.61732 27.1917V32L11.244 29.7484C12.7758 30.1637 14.3646 30.4001 16 30.4001C24.8366 30.4001 32 23.5361 32 15.3332C32 6.86396 24.8366 0 16 0ZM17.8846 20.3648L14.2521 17.3078L8.46153 20.3648L14.4887 11.6936L18.1163 14.7506L23.5385 11.6936L17.8846 20.3648Z"/>
-  </svg>
-  Message Us
-</a>
-</md-filled-button>
-      </form>
     </section>
   </main>
+  
   <footer>
     &copy; 2025 Throne of the Risen Christ International Ministry. All rights reserved.
   </footer>
@@ -199,5 +230,47 @@
     });
   </script>
 
-</body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const articlesContainer = document.getElementById('articles-container');
+
+      fetch('/api/articles')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(articles => {
+          articlesContainer.innerHTML = ''; // Clear any previous content
+          if (articles.length === 0) {
+              articlesContainer.innerHTML = '<p>No articles have been posted yet.</p>';
+              return;
+          }
+
+          articles.forEach(article => {
+            const articleCard = document.createElement('div');
+            articleCard.className = 'article-card';
+            
+            const publishedDate = new Date(article.published_date || article.created_at).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            articleCard.innerHTML = `
+              ${article.image_url ? `<img src="${article.image_url}" alt="${article.title}">` : ''}
+              <h4>${article.title}</h4>
+              <p class="meta">By ${article.author || 'Anonymous'} on ${publishedDate}</p>
+              <p>${article.content.substring(0, 200)}...</p>
+              <a href="#">Read More</a>
+            `;
+            articlesContainer.appendChild(articleCard);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching articles:', error);
+          articlesContainer.innerHTML = '<p>Sorry, there was an error loading the articles.</p>';
+        });
+    });
+  </script>
+  </body>
 </html>

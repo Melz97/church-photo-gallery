@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Article</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Icons" />
+    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"></script>
+    <script>UPLOADCARE_PUBLIC_KEY = '55a6c211f7e50366090e';</script>
+    <style>
+        body { margin: 0; font-family: Roboto, sans-serif; background: linear-gradient(135deg, #5b36f2, #9c27b0); background-attachment: fixed; background-repeat: no-repeat; color: #1c1b1f; }
+        header { box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2); background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border-radius: 1rem; margin: 1rem; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #5b36f2; text-decoration: none; font-weight: 500; }
+        main { max-width: 800px; margin: 2rem auto; padding: 2rem 3rem; background-color: rgba(255, 255, 255, 0.9); border-radius: 1rem; backdrop-filter: blur(6px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #5b36f2; margin-top: 0; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        input, textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
+        textarea { min-height: 200px; resize: vertical; }
+        button { width: 100%; padding: 0.8rem; border: none; background-color: #5b36f2; color: white; font-size: 1.1rem; font-weight: 500; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease; }
+        button:hover { background-color: #4a2cb6; }
+        .upload-button { background-color: #e0e0e0; color: #333; }
+        .uploadcare--widget__button { display: none; }
+        #image-preview { max-width: 100%; height: auto; margin-top: 1rem; border-radius: 8px; border: 1px solid #ccc; display: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav><a href="index.html">← Back to Home</a></nav>
+    </header>
+    <main>
+        <h1>Create a New Article</h1>
+        <form id="article-form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author" required>
+            </div>
+            <div class="form-group">
+                <label>Article Image</label>
+                <input type="hidden" role="uploadcare-uploader" id="image-uploader" data-images-only />
+                <button type="button" id="upload-btn" class="upload-button">Choose an Image</button>
+                <img id="image-preview" src="" alt="Image Preview">
+            </div>
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            <button type="submit">Publish Article</button>
+        </form>
+    </main>
+
+    <script>
+        let uploadedImageUrl = null;
+        const widget = uploadcare.Widget('#image-uploader');
+        const uploadBtn = document.getElementById('upload-btn');
+        const imagePreview = document.getElementById('image-preview');
+
+        uploadBtn.addEventListener('click', () => widget.openDialog());
+        
+        // --- THIS IS THE CORRECTED LOGIC ---
+        widget.onChange(file => {
+            // The 'file' object is a "file promise".
+            // We need to wait for it to be done uploading.
+            if (file) {
+                file.done(fileInfo => {
+                    // This code runs AFTER the upload is complete
+                    uploadedImageUrl = fileInfo.cdnUrl;
+                    imagePreview.src = fileInfo.cdnUrl; // Set the src for the preview
+                    imagePreview.style.display = 'block'; // Make the preview visible
+                    uploadBtn.textContent = 'Change Image';
+                });
+            } else {
+                // When the file is removed from the widget
+                uploadedImageUrl = null;
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                uploadBtn.textContent = 'Choose an Image';
+            }
+        });
+        // --- END OF CORRECTION ---
+
+        document.getElementById('article-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const password = prompt("Please enter the admin password to publish:");
+            if (!password) { return; }
+            const form = event.target;
+            const articleData = {
+                title: form.title.value,
+                author: form.author.value,
+                content: form.content.value,
+                published_date: new Date().toISOString(),
+                image_url: uploadedImageUrl 
+            };
+            try {
+                const response = await fetch('/api/articles', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+                    body: JSON.stringify(articleData)
+                });
+                const result = await response.json();
+                if (!response.ok) { throw new Error(result.message); }
+                alert('Success! Your article has been published.');
+                form.reset();
+                widget.value(null);
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
