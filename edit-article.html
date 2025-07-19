@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Article</title>
+    <style> /* ... copy the styles from create-article.html ... */ </style>
+</head>
+<body>
+    <header><h1>Edit Article</h1><nav><a href="index.html">← Back to Home</a></nav></header>
+    <main>
+        <form id="article-form">
+            <button type="submit">Update Article</button>
+        </form>
+    </main>
+    <script>
+        const form = document.getElementById('article-form');
+        const params = new URLSearchParams(window.location.search);
+        const articleId = params.get('id');
+        
+        // 1. Fetch the existing article data on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!articleId) {
+                alert('No article ID found!');
+                return;
+            }
+            const response = await fetch(`/api/articles/${articleId}`);
+            const article = await response.json();
+
+            // 2. Populate the form with the data
+            document.getElementById('title').value = article.title;
+            document.getElementById('author').value = article.author;
+            // ... and so on for your other fields ...
+        });
+
+        // 3. Handle the form submission to UPDATE the article
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const password = prompt("Please enter admin password to update:");
+            if (!password) return;
+
+            const updatedData = { /* ... get data from form ... */ };
+            
+            await fetch(`/api/articles/${articleId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-password': password
+                },
+                body: JSON.stringify(updatedData)
+            });
+            alert('Article updated successfully!');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
