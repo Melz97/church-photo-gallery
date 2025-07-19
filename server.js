@@ -73,8 +73,9 @@ app.delete('/api/photos', requireAuth, async (req, res) => {
 app.get('/api/articles', async (req, res) => {
     const { data, error } = await supabase
         .from('articles')
-        .select('*')
-        // CORRECTED: Sort by the 'published_date' column which exists in your table
+        // FINAL FIX: Explicitly select all needed columns including 'id'
+        .select('id, title, content, author, published_date, image_url')
+        // Re-add the sorting now that the query is fixed
         .order('published_date', { ascending: false });
 
     if (error) {
