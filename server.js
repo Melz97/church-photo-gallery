@@ -12,7 +12,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const app = express();
 const PORT = 3000;
-const ADMIN_PASSWORD = 'your-very-secret-password'; // 🔒 IMPORTANT: Change this!
+const ADMIN_PASSWORD = 'Melzkhie@35653'; // 🔒 IMPORTANT: Change this!
 
 // Middleware
 app.use(express.json());
