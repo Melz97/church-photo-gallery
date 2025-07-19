@@ -1,22 +1,28 @@
-// server.js
+// server.js - NEW VERSION FOR SUPABASE
+
 const express = require('express');
-const fs = require('fs').promises;
-const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+
+// --- SUPABASE SETUP ---
+// You will get these from your Supabase project settings.
+// We will store them securely on Render in the next part.
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const app = express();
 const PORT = 3000;
-const DB_PATH = path.join(process.env.RENDER_DATA_DIR || __dirname, 'db.json');
 const ADMIN_PASSWORD = 'your-very-secret-password'; // 🔒 IMPORTANT: Change this!
 
-// Middleware to handle JSON data and serve your HTML/CSS files
+// Middleware
 app.use(express.json());
-app.use(express.static(__dirname)); // Serves files from the current directory
+app.use(express.static(__dirname));
 
-// Authentication middleware to protect routes
+// Authentication middleware
 const requireAuth = (req, res, next) => {
     const password = req.headers['x-admin-password'];
     if (password && password === ADMIN_PASSWORD) {
-        next(); // Password is correct, proceed.
+        next();
     } else {
         res.status(401).json({ message: 'Unauthorized: Admin password required.' });
     }
@@ -24,43 +30,45 @@ const requireAuth = (req, res, next) => {
 
 // --- API ROUTES ---
 
-// [PUBLIC] Gets all photos for the gallery
+// [PUBLIC] Gets all photos from the Supabase database
 app.get('/api/photos', async (req, res) => {
-    try {
-        const data = await fs.readFile(DB_PATH, 'utf8');
-        res.json(JSON.parse(data));
-    } catch (error) {
-        // If the database file doesn't exist, return an empty array
-        res.json([]);
+    const { data, error } = await supabase
+        .from('photos')
+        .select('*');
+
+    if (error) {
+        return res.status(500).json({ message: 'Error fetching photos.', error });
     }
+    res.json(data);
 });
 
-// [PROTECTED] Adds new photos to the database
+// [PROTECTED] Adds new photos to the Supabase database
 app.post('/api/photos', requireAuth, async (req, res) => {
-    const newPhotos = req.body;
-    try {
-        const data = await fs.readFile(DB_PATH, 'utf8');
-        const currentPhotos = JSON.parse(data);
-        const allPhotos = [...currentPhotos, ...newPhotos];
-        await fs.writeFile(DB_PATH, JSON.stringify(allPhotos, null, 2));
-        res.status(201).json({ message: 'Photos added successfully.' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error saving photos.' });
+    const newPhotos = req.body; // Expecting an array of photo objects
+    const { data, error } = await supabase
+        .from('photos')
+        .insert(newPhotos);
+    
+    if (error) {
+        return res.status(500).json({ message: 'Error saving photos.', error });
     }
+    res.status(201).json({ message: 'Photos added successfully.' });
 });
 
-// [PROTECTED] Deletes all photos from the database
+// [PROTECTED] Deletes all photos from the Supabase database
 app.delete('/api/photos', requireAuth, async (req, res) => {
-    try {
-        await fs.writeFile(DB_PATH, JSON.stringify([], null, 2)); // Overwrite with empty array
-        res.status(200).json({ message: 'All photos deleted successfully.' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting photos.' });
+    const { data, error } = await supabase
+        .from('photos')
+        .delete()
+        .gt('id', 0); // Deletes all rows
+
+    if (error) {
+        return res.status(500).json({ message: 'Error deleting photos.', error });
     }
+    res.status(200).json({ message: 'All photos deleted successfully.' });
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`✅ Server is running at http://localhost:${PORT}`);
-    console.log(`🔑 Your admin password is: ${ADMIN_PASSWORD}`);
+    console.log(`✅ Server running at http://localhost:${PORT}`);
 });
